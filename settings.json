@@ -1,0 +1,13 @@
+{
+  "ollama_url": "http://127.0.0.1:11434",
+  "chat_model": "qwen3:4b",
+  "embedding_model": "embeddinggemma:latest",
+  "whisper_model": "base",
+  "audio_language": null,
+  "cpu_threads": 6,
+  "context_tokens": 8192,
+  "answer_tokens": 1024,
+  "top_k": 4,
+  "history_turns": 2,
+  "timeout_seconds": 600
+}
