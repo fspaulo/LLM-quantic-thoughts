@@ -24,8 +24,8 @@ Coloque PDFs, textos, vídeos ou áudios em `data/input/`. Pode organizar em sub
 
 Execute sempre que adicionar ou modificar arquivos:
 
-```powershell
-.\.venv\Scripts\python.exe app.py index
+```bash
+.venv/Scripts/python.exe app.py index
 ```
 
 Arquivos inalterados são pulados. Aguarde aparecer `Indexed` para cada arquivo processado.
@@ -34,13 +34,13 @@ Arquivos inalterados são pulados. Aguarde aparecer `Indexed` para cada arquivo 
 
 Abra o Ollama e execute na pasta do projeto:
 
-```powershell
-.\.venv\Scripts\python.exe app.py chat --session abundancia
+```bash
+.venv/Scripts/python.exe app.py chat --session medicine
 ```
 
 Exemplo de pergunta:
 
-> Responda em português: quais práticas os materiais sugerem para atrair abundância?
+> Responda em português: quais práticas os materiais sugerem para melhorar a pele?
 
 Digite `/exit` para sair. Use a mesma sessão para continuar a conversa depois.
 

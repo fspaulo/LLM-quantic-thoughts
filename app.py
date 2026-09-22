@@ -2,6 +2,7 @@
 import argparse
 import hashlib
 import json
+import re
 from pathlib import Path
 import sys
 
@@ -108,10 +109,28 @@ def answer(db, settings, client, question, session='main', source_filter=None, r
     if len(system.encode()) > 1800:
         raise ValueError('Keep prompt.txt within 1800 UTF-8 bytes for the current context budget.')
     response = client.chat(system, json.dumps(payload, ensure_ascii=False))
+    response = sanitize_answer(response)
     sources = '\n'.join(f"[{r['id']}] {r['source']} — {r['location']}" for r in payload['excerpts'])
     with db:
         db.execute('INSERT INTO turns(session,question,answer) VALUES (?,?,?)', (session, question, response))
     return response + '\n\nRetrieved sources (not necessarily all cited):\n' + sources
+
+
+def sanitize_answer(text):
+    cleaned = (text or '').strip()
+    if not cleaned:
+        return cleaned
+    markers = ['na perspectiva dos materiais', 'from the materials\' perspective']
+    lowered = cleaned.lower()
+    for marker in markers:
+        index = lowered.find(marker)
+        if index != -1:
+            cleaned = cleaned[index:]
+            break
+    cleaned = re.sub(r'(?is)^(?:.*?)(?=na perspectiva dos materiais)', '', cleaned)
+    cleaned = re.sub(r'(?is)\n\s*\n\s*(?:retrieved sources|fontes recuperadas|sources:?)\b.*$', '', cleaned)
+    cleaned = re.sub(r'\s{2,}', ' ', cleaned).strip()
+    return cleaned
 
 
 def main():
