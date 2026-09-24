@@ -87,32 +87,68 @@ def answer(db, settings, client, question, session='main', source_filter=None, r
     question = question.strip()
     if not question or len(question.encode()) > 1000:
         raise ValueError('Enter a question of at most 1000 UTF-8 bytes.')
+
     identities = [r[0] for r in db.execute('SELECT DISTINCT embedding_id FROM sources')]
     if not identities:
         raise ValueError('The knowledge base is empty. Run: python app.py index')
+
     embedding_id = client.model_id(settings['embedding_model']) + ':' + PIPELINE
     if identities != [embedding_id]:
-        raise ValueError('Embedding model or pipeline changed. Run index again. Remove obsolete '
-                         'sources explicitly if their original files are no longer available.')
+        raise ValueError(
+            'Embedding model or pipeline changed. Run index again. Remove obsolete '
+            'sources explicitly if their original files are no longer available.'
+        )
+
     client.model_id(settings['chat_model'])
     previous = history(db, session, settings['history_turns'])
+
     query = question
     if previous:
-        query = 'Previous question: ' + clipped(previous[-1]['question'], 300) + '\nCurrent question: ' + question
-    matches = search(db, client.embed([query], query=True)[0], embedding_id, settings['top_k'], source_filter)
+        query = (
+            'Previous question: ' + clipped(previous[-1]['question'], 300)
+            + '\nCurrent question: ' + question
+        )
+
+    matches = search(
+        db,
+        client.embed([query], query=True)[0],
+        embedding_id,
+        settings['top_k'],
+        source_filter,
+    )
     if not matches:
         raise ValueError('No sources match the filter.')
+
+    # Optional: refuse questions with no sufficiently similar document excerpt.
+    # Uncomment these lines to enable it. Calibrate the threshold with your own
+    # relevant and irrelevant questions; 0.45 is only an initial value.
+    #
+    # MIN_RELEVANCE = 0.45
+    # if matches[0]['score'] < MIN_RELEVANCE:
+    #     return "Não encontrei informações relevantes nos documentos para responder."
+
     payload = context_payload(question, previous, matches)
     if not payload['excerpts']:
         raise ValueError('Excerpts exceed the context budget; use shorter source text.')
+
     system = (root / 'prompt.txt').read_text(encoding='utf-8')
     if len(system.encode()) > 1800:
         raise ValueError('Keep prompt.txt within 1800 UTF-8 bytes for the current context budget.')
+
     response = client.chat(system, json.dumps(payload, ensure_ascii=False))
     response = sanitize_answer(response)
-    sources = '\n'.join(f"[{r['id']}] {r['source']} — {r['location']}" for r in payload['excerpts'])
+
+    sources = '\n'.join(
+        f"[{r['id']}] {r['source']} — {r['location']}"
+        for r in payload['excerpts']
+    )
+
     with db:
-        db.execute('INSERT INTO turns(session,question,answer) VALUES (?,?,?)', (session, question, response))
+        db.execute(
+            'INSERT INTO turns(session,question,answer) VALUES (?,?,?)',
+            (session, question, response),
+        )
+
     return response + '\n\nRetrieved sources (not necessarily all cited):\n' + sources
 
 

@@ -1,6 +1,6 @@
 {
   "ollama_url": "http://127.0.0.1:11434",
-  "chat_model": "qwen3:4b",
+  "chat_model": "qwen3:4b-instruct",
   "embedding_model": "embeddinggemma:latest",
   "whisper_model": "base",
   "audio_language": null,
