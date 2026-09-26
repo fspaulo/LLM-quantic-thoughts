@@ -1,11 +1,11 @@
 # Local Content Assistant
 
-A local Python RAG assistant for PDFs, notes, and audio/video files.
+A local Python RAG assistant for PDFs, notes, and audio/video files of any subject.
 All project files are in English, but the assistant can answer in Portuguese.
 
 Example:
 
-> Tell me how I can manage my thoughts and vibrations to attract good things.
+> Tell me how I can manage my thoughts to keep positivity.
 
 The prompt explains the perspective of the imported materials and can organize supported practices into a routine. It does not verify claims scientifically and does not invent citations.
 
@@ -18,13 +18,38 @@ The prompt explains the perspective of the imported materials and can organize s
 | PDF extraction | pypdf |
 | Optional transcription | faster-whisper, multilingual base, CPU INT8 |
 | Storage | SQLite |
-| Interface | Terminal |
+| Interface | Terminal + desktop GUI (Tkinter) |
 
 No OpenAI API, API keys, paid service, Docker, database server, or dedicated GPU is required. The app uses Ollama locally on your machine.
 
+## Desktop interface
+
+The project also includes a simple desktop interface built with Tkinter for chatting and indexing without the terminal.
+
+Windows:
+
+```powershell
+.\.venv\Scripts\python.exe gui.py
+```
+
+Or run the helper script:
+
+```powershell
+.\open-ui.bat
+```
+
+The GUI lets you:
+
+- choose or create a chat session
+- send questions to the local assistant
+- index files from inside the app
+- review previous turns from the selected session
+
+The underlying logic still uses the same local Ollama + SQLite pipeline as the terminal app.
+
 ## Hardware
 
-Designed for ~16 GB RAM and a recent Intel i7 with integrated graphics. The app runs on CPU with six threads. Qwen3 4B is about 2.5 GB; EmbeddingGemma is about 622 MB. Allow several GB of free disk space for models, packages, and source files.
+Designed for ~16 GB RAM and a Intel i7 with integrated graphics. The app runs on CPU with four threads by default. qwen3:4b-instruct is about 2.5 GB; EmbeddingGemma is about 622 MB. Allow several GB of free disk space for models, packages, and source files.
 
 The default context and budget settings keep requests modest. `think:false` is used, models unload after each request, and embedding batches are small.
 

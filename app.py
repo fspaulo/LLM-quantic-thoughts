@@ -122,10 +122,10 @@ def answer(db, settings, client, question, session='main', source_filter=None, r
     # Optional: refuse questions with no sufficiently similar document excerpt.
     # Uncomment these lines to enable it. Calibrate the threshold with your own
     # relevant and irrelevant questions; 0.45 is only an initial value.
-    #
-    # MIN_RELEVANCE = 0.45
-    # if matches[0]['score'] < MIN_RELEVANCE:
-    #     return "Não encontrei informações relevantes nos documentos para responder."
+
+    #MIN_RELEVANCE = 0.45
+    #if matches[0]['score'] < MIN_RELEVANCE:
+    #    return "Não encontrei informações relevantes nos documentos para responder."
 
     payload = context_payload(question, previous, matches)
     if not payload['excerpts']:

@@ -32,6 +32,8 @@ Arquivos inalterados são pulados. Aguarde aparecer `Indexed` para cada arquivo 
 
 ## Rodar posteriormente
 
+### Opção 1 — terminal
+
 Abra o Ollama e execute na pasta do projeto:
 
 ```bash
@@ -43,5 +45,26 @@ Exemplo de pergunta:
 > Responda em português: quais práticas os materiais sugerem para melhorar a pele?
 
 Digite `/exit` para sair. Use a mesma sessão para continuar a conversa depois.
+
+### Opção 2 — interface desktop
+
+Para abrir a interface gráfica do app em Windows:
+
+```powershell
+.\.venv\Scripts\python.exe gui.py
+```
+
+Ou use o atalho:
+
+```powershell
+.\open-ui.bat
+```
+
+Na janela você pode:
+
+- selecionar ou criar uma sessão
+- mandar perguntas para o assistente
+- indexar arquivos diretamente pela interface
+- visualizar o histórico da sessão atual
 
 Não precisa reinstalar, baixar os modelos ou indexar novamente se os arquivos não mudaram.
