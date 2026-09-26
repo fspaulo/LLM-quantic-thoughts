@@ -4,7 +4,7 @@
   "embedding_model": "embeddinggemma:latest",
   "whisper_model": "base",
   "audio_language": null,
-  "cpu_threads": 3,
+  "cpu_threads": 4,
   "context_tokens": 8192,
   "answer_tokens": 512,
   "top_k": 4,
